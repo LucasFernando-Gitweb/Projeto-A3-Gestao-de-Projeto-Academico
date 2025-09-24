@@ -1,0 +1,81 @@
+Com certeza. Aqui está um passo a passo detalhado que descreve a navegação completa do sistema, tela por tela, exatamente como ele funciona.
+
+Passo a Passo da Navegação do Sistema de Gestão
+1. Tela Inicial
+Ao executar o código, o sistema abre na tela inicial, com as duas opções de entrada:
+
+"Criar um novo cadastro": Leva para a tela de cadastro para novos usuários.
+
+"Já sou cadastrado": Leva diretamente para a tela de login.
+
+2. Fluxo: Cadastro de Novo Usuário
+Se você clicar em "Criar um novo cadastro", a tela seguinte será o formulário de cadastro, onde você deve preencher as seguintes informações:
+
+Nome completo: O nome do novo colaborador.
+
+CPF: O número de Cadastro de Pessoa Física.
+
+E-mail: O endereço de e-mail para contato.
+
+Cargo: A função do colaborador. Com base no cargo, o sistema define o perfil (Administrador, Gerente ou Colaborador). Se o cargo for "PO", o perfil será Administrador. Para "Diretoria" ou "Gerência", o perfil será Gerente. Qualquer outro cargo será Colaborador.
+
+Login Sugerido: Após preencher o nome e o CPF, você pode clicar no botão "Sugere Login". O sistema gerará um login composto pelo primeiro nome, último nome e os três últimos dígitos do CPF.
+
+Senha: Você deve criar uma senha que contenha pelo menos uma letra maiúscula e um numeral.
+
+Confirma Senha: Para evitar erros, a senha deve ser digitada novamente.
+
+Ao clicar em "Salvar", o sistema valida as informações. Se tudo estiver correto, uma mensagem de sucesso é exibida e você é redirecionado para a tela inicial. Uma notificação no console simula o envio de e-mail com o login e a senha para o novo usuário.
+
+3. Fluxo: Login no Sistema
+Se você clicar em "Já sou cadastrado" na tela inicial ou após o cadastro, será direcionado para a tela de login, onde deve inserir:
+
+Login ou E-mail: Você pode usar o login sugerido (ex: lucas.silva) ou o e-mail (ex: lucas.silva@email.com).
+
+Senha: A senha cadastrada.
+
+Ao clicar em "Acessar", o sistema valida as credenciais. Se estiverem corretas, você será levado ao Painel de Gestão.
+
+4. Painel de Gestão (Menu Principal)
+Esta é a tela principal do sistema, de onde você pode acessar todas as funcionalidades:
+
+Projetos: Leva à tela de visualização e edição de projetos.
+
+Minhas Tarefas: Mostra as tarefas atribuídas ao usuário logado.
+
+Equipes: Exibe a composição das equipes por projeto.
+
+Usuários: (Apenas para Administrador) Permite visualizar e gerenciar todos os usuários do sistema.
+
+Relatórios: Abre a tela para filtrar e exportar dados dos projetos.
+
+Sair: Desconecta o usuário e retorna para a tela inicial.
+
+5. Navegação nas Telas de Gestão
+Cada botão do Painel de Gestão leva a uma tela específica com suas funcionalidades:
+
+Tela de Projetos:
+
+Exibe uma tabela com o nome, gerente, equipe, status e progresso de todos os projetos.
+
+Para os perfis de Administrador e Gerente, há um botão "Novo Projeto" que abre uma tela para criação de um novo projeto.
+
+Ao clicar nas colunas "Ações" de um projeto, uma janela de opções aparece para "Editar" ou "Excluir" o projeto.
+
+Tela de Minhas Tarefas:
+
+Mostra uma tabela com as tarefas do usuário logado, incluindo descrição, projeto, data de término e status.
+
+Tela de Usuários:
+
+Exibe uma tabela com todos os usuários cadastrados, seus cargos e perfis.
+
+Apenas o Administrador pode ver e usar o botão "Excluir Usuário".
+
+Tela de Relatórios:
+
+Apresenta campos de filtro por nome do projeto, gerente ou analista.
+
+Os botões "Filtrar" e "Exportar CSV" permitem gerar relatórios personalizados com base nos filtros aplicados.
+
+Uma tabela exibe os resultados dos relatórios.
