@@ -1,0 +1,848 @@
+// SistemaGestaoCompletoFinal.java
+// Este código foi reescrito para atender a todos os requisitos do projeto, combinando
+// uma interface gráfica amigável com uma lógica de negócio robusta e segura.
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+public class SistemaGestaoCompletoFinal {
+
+    // ===== Enums =====
+    enum Perfil { ADMINISTRADOR, GERENTE, COLABORADOR }
+    enum Status { PLANEJANDO, EM_ANDAMENTO, CONCLUIDO, CANCELADO, ATRASADO }
+    enum Prioridade { ALTA, MEDIA, NORMAL, BAIXA }
+
+    // ===== Classes internas =====
+    static class Usuario {
+        String nome, cpf, email, login, senha, cargo;
+        Perfil perfil;
+        private List<Projeto> projetosAlocados = new ArrayList<>();
+
+        Usuario(String nome, String cpf, String email, String login, String senha, String cargo, Perfil perfil) {
+            this.nome = nome;
+            this.cpf = cpf;
+            this.email = email;
+            this.login = login;
+            this.senha = senha;
+            this.cargo = cargo;
+            this.perfil = perfil;
+        }
+
+        public String getNome() { return nome; }
+        public String getCpf() { return cpf; }
+        public String getEmail() { return email; }
+        public String getLogin() { return login; }
+        public String getSenha() { return senha; }
+        public Perfil getPerfil() { return perfil; }
+        public String getCargo() { return cargo; }
+        public List<Projeto> getProjetosAlocados() { return projetosAlocados; }
+    }
+
+    static class Tarefa {
+        String descricao, motivo;
+        Usuario responsavel;
+        Date dataInicio, dataFimPrevista, dataFimReal;
+        Status status;
+        Prioridade prioridade;
+
+        Tarefa(String descricao, Usuario responsavel, Date dataInicio, Date dataFimPrevista, Prioridade prioridade) {
+            this.descricao = descricao;
+            this.responsavel = responsavel;
+            this.dataInicio = dataInicio;
+            this.dataFimPrevista = dataFimPrevista;
+            this.prioridade = prioridade;
+            this.status = Status.PLANEJANDO;
+        }
+    }
+
+    static class Projeto {
+        String nome, descricao;
+        Usuario gerente;
+        Date dataInicio, dataFimPrevista;
+        List<Usuario> equipe = new ArrayList<>();
+        List<Tarefa> tarefas = new ArrayList<>();
+
+        Projeto(String nome, String descricao, Usuario gerente, Date dataInicio, Date dataFimPrevista) {
+            this.nome = nome;
+            this.descricao = descricao;
+            this.gerente = gerente;
+            this.dataInicio = dataInicio;
+            this.dataFimPrevista = dataFimPrevista;
+        }
+    }
+
+    // ===== Atributos principais =====
+    private List<Usuario> usuarios = new ArrayList<>();
+    private List<Projeto> projetos = new ArrayList<>();
+    private Usuario usuarioLogado;
+    private JFrame framePrincipal;
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+    // ===== Construtor =====
+    public SistemaGestaoCompletoFinal() {
+        seedDados();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                mostrarTelaInicial();
+            }
+        });
+    }
+
+    // ===== Dados de exemplo =====
+    private void seedDados() {
+        try {
+            Usuario adm = new Usuario("Lucas Silva", "12345678910", "lucas.silva@email.com", "lucas.silva", "Padrao123", "PO", Perfil.ADMINISTRADOR);
+            Usuario gerente = new Usuario("Carol Cavalcante", "10987654321", "carol.cavalcante@email.com", "carol.cavalcante", "Padrao123", "Gerente", Perfil.GERENTE);
+            Usuario analista1 = new Usuario("Thamiris Marie", "11223344556", "thamiris.marie@email.com", "thamiris.marie", "Padrao123", "Analista", Perfil.COLABORADOR);
+            Usuario analista2 = new Usuario("Rodrigo Bat", "66554433221", "rodrigo.bat@email.com", "rodrigo.bat", "Padrao123", "Estagiario", Perfil.COLABORADOR);
+
+            usuarios.add(adm);
+            usuarios.add(gerente);
+            usuarios.add(analista1);
+            usuarios.add(analista2);
+
+            // Projetos de exemplo
+            Projeto p1 = new Projeto("Projeto Alpha", "Sistema de testes", gerente, sdf.parse("2025-09-01"), sdf.parse("2025-10-30"));
+            p1.equipe.add(analista1);
+            p1.equipe.add(analista2);
+            p1.equipe.add(gerente);
+            p1.tarefas.add(new Tarefa("Implementar módulo login", analista1, sdf.parse("2025-09-02"), sdf.parse("2025-09-05"), Prioridade.ALTA));
+            p1.tarefas.add(new Tarefa("Criar relatório CSV", analista2, sdf.parse("2025-09-03"), sdf.parse("2025-09-10"), Prioridade.MEDIA));
+            
+            Projeto p2 = new Projeto("Projeto Beta", "Sistema de gestão", gerente, sdf.parse("2025-09-10"), sdf.parse("2025-11-15"));
+            p2.equipe.add(analista1);
+            p2.equipe.add(gerente);
+            p2.tarefas.add(new Tarefa("Desenvolver painel de controle", analista1, sdf.parse("2025-09-12"), sdf.parse("2025-09-20"), Prioridade.ALTA));
+
+            projetos.add(p1);
+            projetos.add(p2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ===== Telas da Interface =====
+
+    private void mostrarTelaInicial() {
+        try {
+            framePrincipal = new JFrame("Gestão de Projetos");
+            framePrincipal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            framePrincipal.setSize(400, 250);
+            framePrincipal.setLocationRelativeTo(null);
+            JPanel panel = new JPanel(new GridBagLayout());
+            panel.setBackground(Color.WHITE);
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(10, 10, 10, 10);
+
+            JButton btnCadastro = criarBotao("Criar Cadastro", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mostrarTelaCadastro();
+                }
+            });
+
+            JButton btnLogin = criarBotao("Já sou cadastrado", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mostrarTelaLogin();
+                }
+            });
+
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            panel.add(btnCadastro, gbc);
+            gbc.gridy = 1;
+            panel.add(btnLogin, gbc);
+            framePrincipal.getContentPane().removeAll();
+            framePrincipal.getContentPane().add(panel);
+            framePrincipal.setVisible(true);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao iniciar a aplicação: " + e.getMessage());
+        }
+    }
+
+    private void mostrarTelaCadastro() {
+        try {
+            JPanel panel = new JPanel(new GridBagLayout());
+            panel.setBackground(Color.WHITE);
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 5, 5, 5);
+
+            JLabel lblTitulo = new JLabel("Novo Cadastro", JLabel.CENTER);
+            lblTitulo.setFont(new Font("Arial", Font.BOLD, 18));
+            gbc.gridwidth = 2; gbc.gridx = 0; gbc.gridy = 0; panel.add(lblTitulo, gbc);
+
+            gbc.gridwidth = 1;
+            JLabel lblNome = new JLabel("Nome:"); JTextField tfNome = new JTextField(15);
+            JLabel lblCpf = new JLabel("CPF:"); JTextField tfCpf = new JTextField(15);
+            JLabel lblEmail = new JLabel("E-mail:"); JTextField tfEmail = new JTextField(15);
+            JLabel lblCargo = new JLabel("Cargo:"); JTextField tfCargo = new JTextField(15);
+            JLabel lblLoginSug = new JLabel("Login Sugerido:"); JTextField tfLoginSug = new JTextField(15); tfLoginSug.setEditable(false);
+            JLabel lblSenha = new JLabel("Senha:"); JPasswordField pfSenha = new JPasswordField(15);
+            JLabel lblConfirmaSenha = new JLabel("Confirma Senha:"); JPasswordField pfConfirmaSenha = new JPasswordField(15);
+
+            JButton btnSugereLogin = criarBotao("Sugere Login", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String nome = tfNome.getText();
+                    String cpf = tfCpf.getText();
+                    if (nome.isEmpty() || cpf.isEmpty() || cpf.length() < 3) {
+                        JOptionPane.showMessageDialog(framePrincipal, "Nome e CPF válidos são necessários para sugerir o login.");
+                        return;
+                    }
+                    String[] partesNome = nome.split(" ");
+                    String login = partesNome[0].toLowerCase() + "." + partesNome[partesNome.length - 1].toLowerCase() + cpf.substring(cpf.length() - 3);
+                    tfLoginSug.setText(login);
+                }
+            });
+
+            JButton btnSalvar = criarBotao("Salvar", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String nome = tfNome.getText();
+                    String cpf = tfCpf.getText();
+                    String email = tfEmail.getText();
+                    String login = tfLoginSug.getText();
+                    String senha = new String(pfSenha.getPassword());
+                    String confirmaSenha = new String(pfConfirmaSenha.getPassword());
+                    String cargo = tfCargo.getText();
+
+                    if (nome.isEmpty() || cpf.isEmpty() || email.isEmpty() || login.isEmpty() || senha.isEmpty() || confirmaSenha.isEmpty() || cargo.isEmpty()) {
+                        JOptionPane.showMessageDialog(framePrincipal, "Preencha todos os campos!");
+                        return;
+                    }
+                    if (!senha.equals(confirmaSenha)) {
+                        JOptionPane.showMessageDialog(framePrincipal, "As senhas não coincidem!");
+                        return;
+                    }
+                    if (!senha.matches(".*[A-Z].*") || !senha.matches(".*[0-9].*")) {
+                        JOptionPane.showMessageDialog(framePrincipal, "A senha deve conter pelo menos uma letra maiúscula e um numeral.");
+                        return;
+                    }
+                    
+                    Perfil perfil = Perfil.COLABORADOR;
+                    if (cargo.equalsIgnoreCase("PO")) {
+                        perfil = Perfil.ADMINISTRADOR;
+                    } else if (cargo.equalsIgnoreCase("Diretoria") || cargo.equalsIgnoreCase("Gerencia")) {
+                        perfil = Perfil.GERENTE;
+                    }
+
+                    usuarios.add(new Usuario(nome, cpf, email, login, senha, cargo, perfil));
+                    JOptionPane.showMessageDialog(framePrincipal, "Usuário cadastrado com sucesso! Login: " + login);
+                    System.out.println("EMAIL ENVIADO PARA: " + email);
+                    System.out.println("USUÁRIO: " + login + " | SENHA: " + senha);
+
+                    mostrarTelaInicial();
+                }
+            });
+
+            JButton btnVoltar = criarBotao("Voltar", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mostrarTelaInicial();
+                }
+            });
+
+            gbc.gridx = 0; gbc.gridy = 1; panel.add(lblNome, gbc); gbc.gridx = 1; panel.add(tfNome, gbc);
+            gbc.gridx = 0; gbc.gridy = 2; panel.add(lblCpf, gbc); gbc.gridx = 1; panel.add(tfCpf, gbc);
+            gbc.gridx = 0; gbc.gridy = 3; panel.add(lblEmail, gbc); gbc.gridx = 1; panel.add(tfEmail, gbc);
+            gbc.gridx = 0; gbc.gridy = 4; panel.add(lblCargo, gbc); gbc.gridx = 1; panel.add(tfCargo, gbc);
+            gbc.gridx = 0; gbc.gridy = 5; panel.add(btnSugereLogin, gbc); gbc.gridx = 1; panel.add(tfLoginSug, gbc);
+            gbc.gridx = 0; gbc.gridy = 6; panel.add(lblSenha, gbc); gbc.gridx = 1; panel.add(pfSenha, gbc);
+            gbc.gridx = 0; gbc.gridy = 7; panel.add(lblConfirmaSenha, gbc); gbc.gridx = 1; panel.add(pfConfirmaSenha, gbc);
+            gbc.gridx = 0; gbc.gridy = 8; panel.add(btnSalvar, gbc); gbc.gridx = 1; panel.add(btnVoltar, gbc);
+
+            framePrincipal.getContentPane().removeAll();
+            framePrincipal.getContentPane().add(panel);
+            framePrincipal.revalidate();
+            framePrincipal.repaint();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(framePrincipal, "Erro na tela de cadastro: " + e.getMessage());
+        }
+    }
+
+    private void mostrarTelaLogin() {
+        try {
+            JPanel panel = new JPanel(new GridBagLayout());
+            panel.setBackground(Color.WHITE);
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 5, 5, 5);
+
+            JLabel lblTitulo = new JLabel("Gestão de Projetos");
+            lblTitulo.setFont(new Font("Arial", Font.BOLD, 16));
+            gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2; panel.add(lblTitulo, gbc);
+
+            gbc.gridwidth = 1;
+            JLabel lblLogin = new JLabel("Login ou E-mail:"); JTextField tfLogin = new JTextField(15);
+            JLabel lblSenha = new JLabel("Senha:"); JPasswordField pfSenha = new JPasswordField(15);
+
+            JButton btnAcessar = criarBotao("Acessar", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String login = tfLogin.getText();
+                    String senha = new String(pfSenha.getPassword());
+                    for (Usuario u : usuarios) {
+                        if ((u != null) && (u.login.equalsIgnoreCase(login) || u.email.equalsIgnoreCase(login)) && u.senha.equals(senha)) {
+                            usuarioLogado = u;
+                            mostrarPainelGestao();
+                            return;
+                        }
+                    }
+                    JOptionPane.showMessageDialog(framePrincipal, "Usuário ou senha incorretos!");
+                }
+            });
+
+            JButton btnVoltar = criarBotao("Voltar", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mostrarTelaInicial();
+                }
+            });
+
+            gbc.gridx = 0; gbc.gridy = 1; panel.add(lblLogin, gbc); gbc.gridx = 1; panel.add(tfLogin, gbc);
+            gbc.gridx = 0; gbc.gridy = 2; panel.add(lblSenha, gbc); gbc.gridx = 1; panel.add(pfSenha, gbc);
+            gbc.gridx = 0; gbc.gridy = 3; panel.add(btnAcessar, gbc); gbc.gridx = 1; panel.add(btnVoltar, gbc);
+
+            framePrincipal.getContentPane().removeAll();
+            framePrincipal.getContentPane().add(panel);
+            framePrincipal.revalidate();
+            framePrincipal.repaint();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(framePrincipal, "Erro na tela de login: " + e.getMessage());
+        }
+    }
+
+    private void mostrarPainelGestao() {
+        try {
+            JPanel panel = new JPanel(new GridBagLayout());
+            panel.setBackground(Color.WHITE);
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(10, 10, 10, 10);
+
+            JLabel lblTitulo = new JLabel("Painel de Gestão");
+            lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
+            gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2; panel.add(lblTitulo, gbc);
+
+            JButton btnProjetos = criarBotao("Projetos", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mostrarTelaProjetos();
+                }
+            });
+            JButton btnMinhasTarefas = criarBotao("Minhas Tarefas", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mostrarTelaMinhasTarefas();
+                }
+            });
+            JButton btnEquipes = criarBotao("Equipes", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mostrarTelaEquipes();
+                }
+            });
+            JButton btnUsuarios = criarBotao("Usuários", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    if (usuarioLogado != null && usuarioLogado.getPerfil() == Perfil.ADMINISTRADOR) {
+                        mostrarTelaUsuarios();
+                    } else {
+                        JOptionPane.showMessageDialog(framePrincipal, "Você não tem permissão para acessar esta tela.");
+                    }
+                }
+            });
+            JButton btnRelatorios = criarBotao("Relatórios", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mostrarTelaRelatorios();
+                }
+            });
+            JButton btnSair = criarBotao("Sair", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    usuarioLogado = null;
+                    mostrarTelaInicial();
+                }
+            });
+
+            gbc.gridwidth = 1;
+            gbc.gridx = 0; gbc.gridy = 1; panel.add(btnProjetos, gbc);
+            gbc.gridx = 1; gbc.gridy = 1; panel.add(btnMinhasTarefas, gbc);
+            gbc.gridx = 0; gbc.gridy = 2; panel.add(btnEquipes, gbc);
+            gbc.gridx = 1; gbc.gridy = 2; panel.add(btnUsuarios, gbc);
+            gbc.gridx = 0; gbc.gridy = 3; panel.add(btnRelatorios, gbc);
+            gbc.gridx = 1; gbc.gridy = 3; panel.add(btnSair, gbc);
+
+            framePrincipal.getContentPane().removeAll();
+            framePrincipal.getContentPane().add(panel);
+            framePrincipal.revalidate();
+            framePrincipal.repaint();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(framePrincipal, "Erro no painel de gestão: " + e.getMessage());
+        }
+    }
+
+    private void mostrarTelaProjetos() {
+        try {
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.setBackground(Color.WHITE);
+
+            JLabel lblTitulo = new JLabel("Projetos", JLabel.CENTER);
+            lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
+            panel.add(lblTitulo, BorderLayout.NORTH);
+
+            String[] colunas = {"Nome", "Gerente", "Equipe", "Status", "Progresso"};
+            DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
+
+            for (Projeto p : projetos) {
+                if(p == null) continue;
+                String membros = "";
+                for (Usuario u : p.equipe) {
+                    if(u == null) continue;
+                    membros += u.nome + ", ";
+                }
+                if (!membros.isEmpty()) {
+                    membros = membros.substring(0, membros.length() - 2);
+                }
+                
+                int tarefasConcluidas = 0;
+                for(Tarefa t : p.tarefas) {
+                    if(t != null && t.status == Status.CONCLUIDO) {
+                        tarefasConcluidas++;
+                    }
+                }
+                int progresso = (p.tarefas.isEmpty()) ? 0 : (tarefasConcluidas * 100) / p.tarefas.size();
+
+                modelo.addRow(new Object[]{p.nome, p.gerente.nome, membros, getStatusProjeto(p), progresso + "%"});
+            }
+
+            JTable tabela = new JTable(modelo);
+            JScrollPane scroll = new JScrollPane(tabela);
+            panel.add(scroll, BorderLayout.CENTER);
+
+            JPanel panelBotoes = new JPanel();
+            panelBotoes.setBackground(Color.WHITE);
+            
+            JButton btnNovoProjeto = criarBotao("Novo Projeto", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mostrarTelaNovoProjeto();
+                }
+            });
+            
+            JButton btnVoltar = criarBotao("Voltar", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mostrarPainelGestao();
+                }
+            });
+            
+            if (usuarioLogado != null && (usuarioLogado.getPerfil() == Perfil.ADMINISTRADOR || usuarioLogado.getPerfil() == Perfil.GERENTE)) {
+                panelBotoes.add(btnNovoProjeto);
+            }
+            panelBotoes.add(btnVoltar);
+            panel.add(panelBotoes, BorderLayout.SOUTH);
+
+            framePrincipal.getContentPane().removeAll();
+            framePrincipal.getContentPane().add(panel);
+            framePrincipal.revalidate();
+            framePrincipal.repaint();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(framePrincipal, "Erro na tela de projetos: " + e.getMessage());
+        }
+    }
+    
+    private void mostrarTelaNovoProjeto() {
+        try {
+            JPanel panel = new JPanel(new GridBagLayout());
+            panel.setBackground(Color.WHITE);
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 5, 5, 5);
+
+            JLabel lblNome = new JLabel("Nome do Projeto:"); JTextField tfNome = new JTextField(20);
+            JLabel lblDesc = new JLabel("Descrição:"); JTextField tfDesc = new JTextField(20);
+            JLabel lblDataInicio = new JLabel("Data Início (yyyy-MM-dd):"); JTextField tfDataInicio = new JTextField(10);
+            JLabel lblDataFim = new JLabel("Data Fim Prevista (yyyy-MM-dd):"); JTextField tfDataFim = new JTextField(10);
+
+            JButton btnSalvar = criarBotao("Salvar", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        String nome = tfNome.getText();
+                        String desc = tfDesc.getText();
+                        Date inicio = sdf.parse(tfDataInicio.getText());
+                        Date fim = sdf.parse(tfDataFim.getText());
+
+                        if (nome.isEmpty() || desc.isEmpty()) {
+                             JOptionPane.showMessageDialog(framePrincipal, "Preencha todos os campos!");
+                             return;
+                        }
+
+                        if (usuarioLogado != null && usuarioLogado.getProjetosAlocados().size() >= 4) {
+                            JOptionPane.showMessageDialog(framePrincipal, "Você já está em 4 projetos. Finalize um antes de criar outro.");
+                            return;
+                        }
+                        
+                        Projeto p = new Projeto(nome, desc, usuarioLogado, inicio, fim);
+                        p.equipe.add(usuarioLogado);
+                        projetos.add(p);
+                        if (usuarioLogado != null) {
+                            usuarioLogado.getProjetosAlocados().add(p);
+                        }
+                        JOptionPane.showMessageDialog(framePrincipal, "Projeto criado com sucesso!");
+                        mostrarTelaProjetos();
+                    } catch (ParseException ex) {
+                        JOptionPane.showMessageDialog(framePrincipal, "Formato de data inválido. Use yyyy-MM-dd.");
+                    }
+                }
+            });
+            
+            JButton btnVoltar = criarBotao("Voltar", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mostrarTelaProjetos();
+                }
+            });
+
+            gbc.gridx = 0; gbc.gridy = 0; panel.add(lblNome, gbc); gbc.gridx = 1; panel.add(tfNome, gbc);
+            gbc.gridx = 0; gbc.gridy = 1; panel.add(lblDesc, gbc); gbc.gridx = 1; panel.add(tfDesc, gbc);
+            gbc.gridx = 0; gbc.gridy = 2; panel.add(lblDataInicio, gbc); gbc.gridx = 1; panel.add(tfDataInicio, gbc);
+            gbc.gridx = 0; gbc.gridy = 3; panel.add(lblDataFim, gbc); gbc.gridx = 1; panel.add(tfDataFim, gbc);
+            gbc.gridx = 0; gbc.gridy = 4; panel.add(btnSalvar, gbc); gbc.gridx = 1; panel.add(btnVoltar, gbc);
+
+            framePrincipal.getContentPane().removeAll();
+            framePrincipal.getContentPane().add(panel);
+            framePrincipal.revalidate();
+            framePrincipal.repaint();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(framePrincipal, "Erro na tela de novo projeto: " + e.getMessage());
+        }
+    }
+    
+    private String getStatusProjeto(Projeto p) {
+        if(p == null) return "Indefinido";
+        if (p.dataFimPrevista != null && new Date().after(p.dataFimPrevista)) {
+            return "Em Atraso";
+        }
+        int concluidas = 0;
+        int totalTarefas = p.tarefas.size();
+        if (totalTarefas == 0) {
+            return "Planejando";
+        }
+        for (Tarefa t : p.tarefas) {
+            if (t != null && t.status == Status.CONCLUIDO) {
+                concluidas++;
+            }
+        }
+        if (concluidas == totalTarefas) {
+            return "Concluído";
+        }
+        if (concluidas > 0 && concluidas < totalTarefas) {
+            return "Em Andamento";
+        }
+        return "Planejando";
+    }
+
+    private void mostrarTelaMinhasTarefas() {
+        try {
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.setBackground(Color.WHITE);
+
+            JLabel lblTitulo = new JLabel("Minhas Tarefas", JLabel.CENTER);
+            lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
+            panel.add(lblTitulo, BorderLayout.NORTH);
+
+            String[] colunas = {"Descrição", "Projeto", "Data Fim Prevista", "Status", "Prioridade"};
+            DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
+
+            if(usuarioLogado != null) {
+                for (Projeto p : projetos) {
+                    if(p == null) continue;
+                    for (Tarefa t : p.tarefas) {
+                        if (t != null && t.responsavel != null && t.responsavel.equals(usuarioLogado)) {
+                            modelo.addRow(new Object[]{
+                                t.descricao, p.nome, sdf.format(t.dataFimPrevista), t.status, t.prioridade
+                            });
+                        }
+                    }
+                }
+            }
+
+            JTable tabela = new JTable(modelo);
+            JScrollPane scroll = new JScrollPane(tabela);
+            panel.add(scroll, BorderLayout.CENTER);
+
+            JButton btnVoltar = criarBotao("Voltar", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mostrarPainelGestao();
+                }
+            });
+            panel.add(btnVoltar, BorderLayout.SOUTH);
+
+            framePrincipal.getContentPane().removeAll();
+            framePrincipal.getContentPane().add(panel);
+            framePrincipal.revalidate();
+            framePrincipal.repaint();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(framePrincipal, "Erro na tela de minhas tarefas: " + e.getMessage());
+        }
+    }
+
+    private void mostrarTelaEquipes() {
+        try {
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.setBackground(Color.WHITE);
+
+            JLabel lblTitulo = new JLabel("Gestão de Equipes", JLabel.CENTER);
+            lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
+            panel.add(lblTitulo, BorderLayout.NORTH);
+
+            String[] colunas = {"Projeto", "Gerente", "Membros", "Status"};
+            DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
+
+            for (Projeto p : projetos) {
+                if(p == null) continue;
+                String membros = "";
+                for (Usuario u : p.equipe) {
+                    if(u == null) continue;
+                    membros += u.nome + ", ";
+                }
+                if (!membros.isEmpty()) {
+                    membros = membros.substring(0, membros.length() - 2);
+                }
+                modelo.addRow(new Object[]{p.nome, p.gerente.nome, membros, getStatusProjeto(p)});
+            }
+
+            JTable tabela = new JTable(modelo);
+            JScrollPane scroll = new JScrollPane(tabela);
+            panel.add(scroll, BorderLayout.CENTER);
+
+            JPanel panelBotoes = new JPanel();
+            panelBotoes.setBackground(Color.WHITE);
+            JButton btnVoltar = criarBotao("Voltar", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mostrarPainelGestao();
+                }
+            });
+            panelBotoes.add(btnVoltar);
+            panel.add(panelBotoes, BorderLayout.SOUTH);
+
+            framePrincipal.getContentPane().removeAll();
+            framePrincipal.getContentPane().add(panel);
+            framePrincipal.revalidate();
+            framePrincipal.repaint();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(framePrincipal, "Erro na tela de equipes: " + e.getMessage());
+        }
+    }
+
+    private void mostrarTelaUsuarios() {
+        try {
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.setBackground(Color.WHITE);
+
+            JLabel lblTitulo = new JLabel("Gestão de Usuários", JLabel.CENTER);
+            lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
+            panel.add(lblTitulo, BorderLayout.NORTH);
+
+            String[] colunas = {"Nome", "E-mail", "Login", "Cargo", "Perfil", "Projetos em Andamento"};
+            DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
+
+            for (Usuario u : usuarios) {
+                if(u == null) continue;
+                String projetosAndamento = "";
+                for (Projeto p : projetos) {
+                    if (p != null && p.equipe.contains(u) && "Em Andamento".equals(getStatusProjeto(p))) {
+                        projetosAndamento += p.nome + ", ";
+                    }
+                }
+                if (!projetosAndamento.isEmpty()) {
+                    projetosAndamento = projetosAndamento.substring(0, projetosAndamento.length() - 2);
+                }
+                modelo.addRow(new Object[]{u.nome, u.email, u.login, u.cargo, u.perfil, projetosAndamento});
+            }
+
+            JTable tabela = new JTable(modelo);
+            JScrollPane scroll = new JScrollPane(tabela);
+            panel.add(scroll, BorderLayout.CENTER);
+
+            JPanel panelBotoes = new JPanel();
+            panelBotoes.setBackground(Color.WHITE);
+
+            JButton btnExcluir = criarBotao("Excluir Usuário", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    int linhaSelecionada = tabela.getSelectedRow();
+                    if (linhaSelecionada == -1 || usuarios.size() <= linhaSelecionada) {
+                        JOptionPane.showMessageDialog(framePrincipal, "Selecione um usuário válido para excluir.");
+                        return;
+                    }
+                    
+                    Usuario usuarioParaExcluir = usuarios.get(linhaSelecionada);
+                    if (usuarioParaExcluir == null) {
+                        JOptionPane.showMessageDialog(framePrincipal, "Usuário inválido.");
+                        return;
+                    }
+
+                    if (usuarioParaExcluir.getPerfil() == Perfil.ADMINISTRADOR) {
+                        JOptionPane.showMessageDialog(framePrincipal, "Não é possível excluir um Administrador.");
+                        return;
+                    }
+
+                    int confirmacao = JOptionPane.showConfirmDialog(framePrincipal, "Deseja realmente excluir " + usuarioParaExcluir.getNome() + "?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+                    if (confirmacao == JOptionPane.YES_OPTION) {
+                        usuarios.remove(linhaSelecionada);
+                        mostrarTelaUsuarios();
+                        JOptionPane.showMessageDialog(framePrincipal, "Usuário excluído com sucesso.");
+                    }
+                }
+            });
+            
+            JButton btnVoltar = criarBotao("Voltar", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mostrarPainelGestao();
+                }
+            });
+            
+            panelBotoes.add(btnExcluir);
+            panelBotoes.add(btnVoltar);
+            panel.add(panelBotoes, BorderLayout.SOUTH);
+
+            framePrincipal.getContentPane().removeAll();
+            framePrincipal.getContentPane().add(panel);
+            framePrincipal.revalidate();
+            framePrincipal.repaint();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(framePrincipal, "Erro na tela de usuários: " + e.getMessage());
+        }
+    }
+    
+    private void mostrarTelaRelatorios() {
+        try {
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.setBackground(Color.WHITE);
+
+            JLabel lblTitulo = new JLabel("Relatórios de Projetos", JLabel.CENTER);
+            lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
+            panel.add(lblTitulo, BorderLayout.NORTH);
+
+            JPanel panelFiltros = new JPanel(new GridBagLayout());
+            panelFiltros.setBackground(Color.WHITE);
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 5, 5, 5);
+
+            JLabel lblProjeto = new JLabel("Nome do Projeto:"); JTextField tfProjeto = new JTextField(15);
+            JLabel lblAnalista = new JLabel("Analista:"); JTextField tfAnalista = new JTextField(15);
+            JLabel lblGerente = new JLabel("Gerente:"); JTextField tfGerente = new JTextField(15);
+
+            JButton btnFiltrar = criarBotao("Filtrar", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    atualizarTabelaRelatorios(tfProjeto.getText(), tfGerente.getText(), tfAnalista.getText());
+                }
+            });
+
+            JButton btnExportar = criarBotao("Exportar CSV", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    exportarCSVRelatorios(tfProjeto.getText(), tfGerente.getText(), tfAnalista.getText());
+                }
+            });
+
+            JButton btnVoltar = criarBotao("Voltar", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mostrarPainelGestao();
+                }
+            });
+
+            gbc.gridx = 0; gbc.gridy = 0; panelFiltros.add(lblProjeto, gbc); gbc.gridx = 1; panelFiltros.add(tfProjeto, gbc);
+            gbc.gridx = 0; gbc.gridy = 1; panelFiltros.add(lblAnalista, gbc); gbc.gridx = 1; panelFiltros.add(tfAnalista, gbc);
+            gbc.gridx = 0; gbc.gridy = 2; panelFiltros.add(lblGerente, gbc); gbc.gridx = 1; panelFiltros.add(tfGerente, gbc);
+            gbc.gridx = 0; gbc.gridy = 3; panelFiltros.add(btnFiltrar, gbc); gbc.gridx = 1; panelFiltros.add(btnExportar, gbc);
+            gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2; panelFiltros.add(btnVoltar, gbc);
+
+            panel.add(panelFiltros, BorderLayout.NORTH);
+
+            String[] colunas = {"Projeto", "Gerente", "Analista", "Tarefa", "Status", "Prioridade", "Data Início", "Data Fim Prevista", "Em Atraso", "Motivo"};
+            DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
+            JTable tabela = new JTable(modelo);
+            JScrollPane scroll = new JScrollPane(tabela);
+            panel.add(scroll, BorderLayout.CENTER);
+
+            framePrincipal.getContentPane().removeAll();
+            framePrincipal.getContentPane().add(panel);
+            framePrincipal.revalidate();
+            framePrincipal.repaint();
+
+            atualizarTabelaRelatorios("", "", "");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(framePrincipal, "Erro na tela de relatórios: " + e.getMessage());
+        }
+    }
+    
+    private void atualizarTabelaRelatorios(String filtroProjeto, String filtroGerente, String filtroAnalista) {
+        try {
+            DefaultTableModel modelo = new DefaultTableModel(new String[]{"Projeto", "Gerente", "Analista", "Tarefa", "Status", "Prioridade", "Data Início", "Data Fim Prevista", "Em Atraso", "Motivo"}, 0);
+            for (Projeto p : projetos) {
+                if(p == null) continue;
+                if (!filtroProjeto.isEmpty() && !p.nome.toLowerCase().contains(filtroProjeto.toLowerCase())) continue;
+                if (p.gerente != null && !filtroGerente.isEmpty() && !p.gerente.nome.toLowerCase().contains(filtroGerente.toLowerCase())) continue;
+                for (Tarefa t : p.tarefas) {
+                    if (t == null) continue;
+                    if (t.responsavel != null && !filtroAnalista.isEmpty() && !t.responsavel.nome.toLowerCase().contains(filtroAnalista.toLowerCase())) continue;
+                    
+                    boolean emAtraso = (t.dataFimPrevista != null && new Date().after(t.dataFimPrevista)) && t.status != Status.CONCLUIDO && t.status != Status.CANCELADO;
+                    String motivo = (t.status == Status.CANCELADO) ? t.motivo : (emAtraso ? "Sim" : "Não");
+
+                    modelo.addRow(new Object[]{p.nome, p.gerente != null ? p.gerente.nome : "N/A", t.responsavel != null ? t.responsavel.nome : "N/A", t.descricao, t.status, t.prioridade, sdf.format(t.dataInicio), sdf.format(t.dataFimPrevista), emAtraso ? "Sim" : "Não", motivo});
+                }
+            }
+            
+            Component[] componentes = framePrincipal.getContentPane().getComponents();
+            JTable tabela = null;
+            for(Component comp : componentes) {
+                if (comp instanceof JPanel) {
+                    Component[] panelComps = ((JPanel)comp).getComponents();
+                    for(Component panelComp : panelComps) {
+                        if (panelComp instanceof JScrollPane) {
+                            tabela = (JTable)((JScrollPane) panelComp).getViewport().getView();
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if(tabela != null) {
+                tabela.setModel(modelo);
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(framePrincipal, "Erro ao atualizar relatórios: " + e.getMessage());
+        }
+    }
+
+    private void exportarCSVRelatorios(String filtroProjeto, String filtroGerente, String filtroAnalista) {
+        try (FileWriter writer = new FileWriter("relatorios_export.csv")) {
+            writer.write("Projeto;Gerente;Analista;Tarefa;Status;Prioridade;Data Inicio;Data Fim Prevista;Em Atraso;Motivo\n");
+            for (Projeto p : projetos) {
+                if(p == null) continue;
+                if (!filtroProjeto.isEmpty() && !p.nome.toLowerCase().contains(filtroProjeto.toLowerCase())) continue;
+                if (p.gerente != null && !filtroGerente.isEmpty() && !p.gerente.nome.toLowerCase().contains(filtroGerente.toLowerCase())) continue;
+                for (Tarefa t : p.tarefas) {
+                    if (t == null) continue;
+                    if (t.responsavel != null && !filtroAnalista.isEmpty() && !t.responsavel.nome.toLowerCase().contains(filtroAnalista.toLowerCase())) continue;
+                    
+                    boolean emAtraso = (t.dataFimPrevista != null && new Date().after(t.dataFimPrevista)) && t.status != Status.CONCLUIDO && t.status != Status.CANCELADO;
+                    String motivo = (t.status == Status.CANCELADO) ? t.motivo : (emAtraso ? "Sim" : "Não");
+
+                    writer.write(p.nome + ";" + (p.gerente != null ? p.gerente.nome : "N/A") + ";" + (t.responsavel != null ? t.responsavel.nome : "N/A") + ";" + t.descricao + ";" + t.status + ";" + t.prioridade + ";" + sdf.format(t.dataInicio) + ";" + sdf.format(t.dataFimPrevista) + ";" + (emAtraso ? "Sim" : "Não") + ";" + motivo + "\n");
+                }
+            }
+            JOptionPane.showMessageDialog(framePrincipal, "Arquivo relatorios_export.csv gerado com sucesso!");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(framePrincipal, "Erro ao exportar CSV: " + e.getMessage());
+        }
+    }
+
+    private JButton criarBotao(String texto, ActionListener acao) {
+        JButton btn = new JButton(texto);
+        btn.setBackground(new Color(0, 102, 204));
+        btn.setForeground(Color.WHITE);
+        btn.addActionListener(acao);
+        return btn;
+    }
+
+    public static void main(String[] args) {
+        new SistemaGestaoCompletoFinal();
+    }
+}
