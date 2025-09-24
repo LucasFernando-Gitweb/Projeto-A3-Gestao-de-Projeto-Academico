@@ -1,0 +1,100 @@
+Passo a passo para rodar o SistemaFinal.java no NetBeans
+1️⃣ Abrir o NetBeans
+
+Abra o NetBeans IDE no seu computador.
+
+Certifique-se de que você tem o JDK 17 ou superior configurado no NetBeans.
+
+Em Tools → Java Platforms, confira se o JDK 17+ está ativo.
+
+2️⃣ Criar um novo projeto
+
+Vá em File → New Project.
+
+Escolha Java → Java Application e clique em Next.
+
+Digite o nome do projeto, por exemplo: SistemaGestaoProjetos.
+
+Desmarque a opção Create Main Class, pois vamos criar manualmente a classe principal.
+
+Clique em Finish.
+
+3️⃣ Criar a classe principal
+
+No Projects → Source Packages → seu pacote (ex: default package), clique com o botão direito em New → Java Class.
+
+Nomeie a classe como SistemaFinal → isso é importante, pois o código exige que a classe pública seja SistemaFinal.
+
+Clique em Finish.
+
+4️⃣ Copiar e colar o código
+
+Abra a classe SistemaFinal.java criada.
+
+Apague qualquer código que esteja dentro da classe criada pelo NetBeans.
+
+Copie todo o código ultra seguro que te enviei e cole dentro do arquivo SistemaFinal.java.
+
+⚠️ Importante: não altere o nome da classe SistemaFinal.
+Todas as chaves { } já estão fechadas corretamente no código fornecido.
+
+5️⃣ Configurar Scanner e dependências
+
+O código usa apenas bibliotecas padrão do Java (java.util, java.time, java.io), então não é necessário adicionar bibliotecas externas.
+
+O NetBeans deve reconhecer automaticamente os imports.
+
+6️⃣ Compilar o projeto
+
+Clique com o botão direito sobre o projeto → Clean and Build.
+
+Observe a aba Output:
+
+Se não houver mensagens de erro, a compilação foi bem-sucedida.
+
+Qualquer erro normalmente é relacionado a cópia incorreta do código ou nome de arquivo errado.
+
+7️⃣ Executar o projeto
+
+Clique com o botão direito sobre o projeto → Run.
+
+O console do NetBeans abrirá.
+
+Você verá o menu de login:
+
+===== LOGIN =====
+Login ou E-mail:
+Senha:
+
+
+Use os usuários pré-cadastrados:
+
+Lucas Silva → login: lucas.silva, senha: Padrao123
+
+Carol Cavalcante → login: carol.cavalcante, senha: Padrao123
+
+Thamiris Marie → login: thamiris.marie, senha: Padrao123
+
+Rodrigo Bat → login: rodrigo.bat, senha: Padrao123
+
+8️⃣ Navegando pelo sistema
+
+Após o login, siga os menus do console.
+
+Todos os inputs são validados:
+
+Números incorretos → o sistema pede novamente.
+
+Datas inválidas → o sistema solicita até que o formato esteja correto.
+
+Limite de 4 projetos → não permite adicionar mais.
+
+Exportação de CSV: projetos_export.csv será criado na pasta raiz do projeto.
+
+9️⃣ Observações finais
+
+Sempre que copiar e colar o código, garanta que todas as linhas foram copiadas, sem faltar nenhuma chave {} ou }.
+
+Evite renomear a classe ou os arquivos.
+
+Entrada de dados incorreta é tratada, então não há risco de crash.
