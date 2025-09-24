@@ -1,11 +1,13 @@
 // SistemaGestaoCompletoFinal.java
-// Versão completa com melhorias de usabilidade e interface de edição.
+// Versao final do sistema de gestao de projetos, pronta para NetBeans.
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
@@ -13,7 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import com.toedter.calendar.JCalendar;
 
 public class SistemaGestaoCompletoFinal {
 
@@ -116,10 +117,10 @@ public class SistemaGestaoCompletoFinal {
             p1.equipe.add(analista1);
             p1.equipe.add(analista2);
             p1.equipe.add(gerente);
-            p1.tarefas.add(new Tarefa("Implementar módulo login", analista1, sdf.parse("2025-09-02"), sdf.parse("2025-09-05"), Prioridade.ALTA));
-            p1.tarefas.add(new Tarefa("Criar relatório CSV", analista2, sdf.parse("2025-09-03"), sdf.parse("2025-09-10"), Prioridade.MEDIA));
+            p1.tarefas.add(new Tarefa("Implementar modulo login", analista1, sdf.parse("2025-09-02"), sdf.parse("2025-09-05"), Prioridade.ALTA));
+            p1.tarefas.add(new Tarefa("Criar relatorio CSV", analista2, sdf.parse("2025-09-03"), sdf.parse("2025-09-10"), Prioridade.MEDIA));
             
-            Projeto p2 = new Projeto("Projeto Beta", "Sistema de gestão", gerente, sdf.parse("2025-09-10"), sdf.parse("2025-11-15"));
+            Projeto p2 = new Projeto("Projeto Beta", "Sistema de gestao", gerente, sdf.parse("2025-09-10"), sdf.parse("2025-11-15"));
             p2.equipe.add(analista1);
             p2.equipe.add(gerente);
             p2.tarefas.add(new Tarefa("Desenvolver painel de controle", analista1, sdf.parse("2025-09-12"), sdf.parse("2025-09-20"), Prioridade.ALTA));
@@ -135,7 +136,7 @@ public class SistemaGestaoCompletoFinal {
 
     private void mostrarTelaInicial() {
         try {
-            framePrincipal = new JFrame("Gestão de Projetos");
+            framePrincipal = new JFrame("Gestao de Projetos");
             framePrincipal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             framePrincipal.setSize(400, 250);
             framePrincipal.setLocationRelativeTo(null);
@@ -150,7 +151,7 @@ public class SistemaGestaoCompletoFinal {
                 }
             });
 
-            JButton btnLogin = criarBotao("Já sou cadastrado", new ActionListener() {
+            JButton btnLogin = criarBotao("Ja sou cadastrado", new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     mostrarTelaLogin();
                 }
@@ -165,7 +166,7 @@ public class SistemaGestaoCompletoFinal {
             framePrincipal.getContentPane().add(panel);
             framePrincipal.setVisible(true);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Erro ao iniciar a aplicação: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Erro ao iniciar a aplicacao: " + e.getMessage());
         }
     }
 
@@ -194,7 +195,7 @@ public class SistemaGestaoCompletoFinal {
                     String nome = tfNome.getText();
                     String cpf = tfCpf.getText();
                     if (nome.isEmpty() || cpf.isEmpty() || cpf.length() < 3) {
-                        JOptionPane.showMessageDialog(framePrincipal, "Nome e CPF válidos são necessários para sugerir o login.");
+                        JOptionPane.showMessageDialog(framePrincipal, "Nome e CPF validos sao necessarios para sugerir o login.");
                         return;
                     }
                     String[] partesNome = nome.split(" ");
@@ -218,11 +219,11 @@ public class SistemaGestaoCompletoFinal {
                         return;
                     }
                     if (!senha.equals(confirmaSenha)) {
-                        JOptionPane.showMessageDialog(framePrincipal, "As senhas não coincidem!");
+                        JOptionPane.showMessageDialog(framePrincipal, "As senhas nao coincidem!");
                         return;
                     }
                     if (!senha.matches(".*[A-Z].*") || !senha.matches(".*[0-9].*")) {
-                        JOptionPane.showMessageDialog(framePrincipal, "A senha deve conter pelo menos uma letra maiúscula e um numeral.");
+                        JOptionPane.showMessageDialog(framePrincipal, "A senha deve conter pelo menos uma letra maiuscula e um numeral.");
                         return;
                     }
                     
@@ -234,9 +235,9 @@ public class SistemaGestaoCompletoFinal {
                     }
 
                     usuarios.add(new Usuario(nome, cpf, email, login, senha, cargo, perfil));
-                    JOptionPane.showMessageDialog(framePrincipal, "Usuário cadastrado com sucesso! Login: " + login);
+                    JOptionPane.showMessageDialog(framePrincipal, "Usuario cadastrado com sucesso! Login: " + login);
                     System.out.println("EMAIL ENVIADO PARA: " + email);
-                    System.out.println("USUÁRIO: " + login + " | SENHA: " + senha);
+                    System.out.println("USUARIO: " + login + " | SENHA: " + senha);
 
                     mostrarTelaInicial();
                 }
@@ -273,7 +274,7 @@ public class SistemaGestaoCompletoFinal {
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.insets = new Insets(5, 5, 5, 5);
 
-            JLabel lblTitulo = new JLabel("Gestão de Projetos");
+            JLabel lblTitulo = new JLabel("Gestao de Projetos");
             lblTitulo.setFont(new Font("Arial", Font.BOLD, 16));
             gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2; panel.add(lblTitulo, gbc);
 
@@ -292,7 +293,7 @@ public class SistemaGestaoCompletoFinal {
                             return;
                         }
                     }
-                    JOptionPane.showMessageDialog(framePrincipal, "Usuário ou senha incorretos!");
+                    JOptionPane.showMessageDialog(framePrincipal, "Usuario ou senha incorretos!");
                 }
             });
 
@@ -322,7 +323,7 @@ public class SistemaGestaoCompletoFinal {
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.insets = new Insets(10, 10, 10, 10);
 
-            JLabel lblTitulo = new JLabel("Painel de Gestão");
+            JLabel lblTitulo = new JLabel("Painel de Gestao");
             lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
             gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2; panel.add(lblTitulo, gbc);
 
@@ -341,16 +342,16 @@ public class SistemaGestaoCompletoFinal {
                     mostrarTelaEquipes();
                 }
             });
-            JButton btnUsuarios = criarBotao("Usuários", new ActionListener() {
+            JButton btnUsuarios = criarBotao("Usuarios", new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     if (usuarioLogado != null && usuarioLogado.getPerfil() == Perfil.ADMINISTRADOR) {
                         mostrarTelaUsuarios();
                     } else {
-                        JOptionPane.showMessageDialog(framePrincipal, "Você não tem permissão para acessar esta tela.");
+                        JOptionPane.showMessageDialog(framePrincipal, "Voce nao tem permissao para acessar esta tela.");
                     }
                 }
             });
-            JButton btnRelatorios = criarBotao("Relatórios", new ActionListener() {
+            JButton btnRelatorios = criarBotao("Relatorios", new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     mostrarTelaRelatorios();
                 }
@@ -375,7 +376,7 @@ public class SistemaGestaoCompletoFinal {
             framePrincipal.revalidate();
             framePrincipal.repaint();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(framePrincipal, "Erro no painel de gestão: " + e.getMessage());
+            JOptionPane.showMessageDialog(framePrincipal, "Erro no painel de gestao: " + e.getMessage());
         }
     }
 
@@ -388,7 +389,7 @@ public class SistemaGestaoCompletoFinal {
             lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
             panel.add(lblTitulo, BorderLayout.NORTH);
 
-            String[] colunas = {"Nome", "Gerente", "Equipe", "Status", "Progresso", "Ações"};
+            String[] colunas = {"Nome", "Gerente", "Equipe", "Status", "Progresso", "Acoes"};
             DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
 
             for (Projeto p : projetos) {
@@ -420,16 +421,16 @@ public class SistemaGestaoCompletoFinal {
                     if (e.getClickCount() == 1) {
                         int linha = tabela.getSelectedRow();
                         int coluna = tabela.getSelectedColumn();
-                        if (coluna == tabela.getColumnCount() - 1) { // Última coluna
+                        if (coluna == tabela.getColumnCount() - 1) { // Ultima coluna
                             int escolha = JOptionPane.showOptionDialog(framePrincipal,
-                                "O que deseja fazer?", "Ações",
+                                "O que deseja fazer?", "Acoes",
                                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
                                 null, new Object[]{"Editar", "Excluir"}, "Editar");
                             
                             if (escolha == JOptionPane.YES_OPTION) {
                                 mostrarTelaEditarProjeto(projetos.get(linha));
                             } else if (escolha == JOptionPane.NO_OPTION) {
-                                int confirmacao = JOptionPane.showConfirmDialog(framePrincipal, "Deseja realmente excluir este projeto?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+                                int confirmacao = JOptionPane.showConfirmDialog(framePrincipal, "Deseja realmente excluir este projeto?", "Confirmar Exclusao", JOptionPane.YES_NO_OPTION);
                                 if (confirmacao == JOptionPane.YES_OPTION) {
                                     projetos.remove(linha);
                                     mostrarTelaProjetos();
@@ -480,17 +481,17 @@ public class SistemaGestaoCompletoFinal {
             gbc.insets = new Insets(5, 5, 5, 5);
 
             JLabel lblNome = new JLabel("Nome do Projeto:"); JTextField tfNome = new JTextField(20);
-            JLabel lblDesc = new JLabel("Descrição:"); JTextField tfDesc = new JTextField(20);
-            JLabel lblDataInicio = new JLabel("Data Início:"); JCalendar calDataInicio = new JCalendar();
-            JLabel lblDataFim = new JLabel("Data Fim Prevista:"); JCalendar calDataFim = new JCalendar();
+            JLabel lblDesc = new JLabel("Descricao:"); JTextField tfDesc = new JTextField(20);
+            JLabel lblDataInicio = new JLabel("Data Inicio (yyyy-MM-dd):"); JTextField tfDataInicio = new JTextField(10);
+            JLabel lblDataFim = new JLabel("Data Fim Prevista (yyyy-MM-dd):"); JTextField tfDataFim = new JTextField(10);
             
             JButton btnSalvar = criarBotao("Salvar", new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     try {
                         String nome = tfNome.getText();
                         String desc = tfDesc.getText();
-                        Date inicio = calDataInicio.getDate();
-                        Date fim = calDataFim.getDate();
+                        Date inicio = sdf.parse(tfDataInicio.getText());
+                        Date fim = sdf.parse(tfDataFim.getText());
 
                         if (nome.isEmpty() || desc.isEmpty()) {
                              JOptionPane.showMessageDialog(framePrincipal, "Preencha todos os campos!");
@@ -498,7 +499,7 @@ public class SistemaGestaoCompletoFinal {
                         }
 
                         if (usuarioLogado != null && usuarioLogado.getProjetosAlocados().size() >= 4) {
-                            JOptionPane.showMessageDialog(framePrincipal, "Você já está em 4 projetos. Finalize um antes de criar outro.");
+                            JOptionPane.showMessageDialog(framePrincipal, "Voce ja esta em 4 projetos. Finalize um antes de criar outro.");
                             return;
                         }
                         
@@ -524,8 +525,8 @@ public class SistemaGestaoCompletoFinal {
 
             gbc.gridx = 0; gbc.gridy = 0; panel.add(lblNome, gbc); gbc.gridx = 1; panel.add(tfNome, gbc);
             gbc.gridx = 0; gbc.gridy = 1; panel.add(lblDesc, gbc); gbc.gridx = 1; panel.add(tfDesc, gbc);
-            gbc.gridx = 0; gbc.gridy = 2; panel.add(lblDataInicio, gbc); gbc.gridx = 1; panel.add(calDataInicio, gbc);
-            gbc.gridx = 0; gbc.gridy = 3; panel.add(lblDataFim, gbc); gbc.gridx = 1; panel.add(calDataFim, gbc);
+            gbc.gridx = 0; gbc.gridy = 2; panel.add(lblDataInicio, gbc); gbc.gridx = 1; panel.add(tfDataInicio, gbc);
+            gbc.gridx = 0; gbc.gridy = 3; panel.add(lblDataFim, gbc); gbc.gridx = 1; panel.add(tfDataFim, gbc);
             gbc.gridx = 0; gbc.gridy = 4; panel.add(btnSalvar, gbc); gbc.gridx = 1; panel.add(btnVoltar, gbc);
 
             framePrincipal.getContentPane().removeAll();
@@ -548,9 +549,9 @@ public class SistemaGestaoCompletoFinal {
             gbc.insets = new Insets(5,5,5,5);
 
             JLabel lblNome = new JLabel("Nome do Projeto:"); JTextField tfNome = new JTextField(20); tfNome.setText(projeto.nome);
-            JLabel lblDesc = new JLabel("Descrição:"); JTextField tfDesc = new JTextField(20); tfDesc.setText(projeto.descricao);
+            JLabel lblDesc = new JLabel("Descricao:"); JTextField tfDesc = new JTextField(20); tfDesc.setText(projeto.descricao);
             
-            JButton btnSalvar = criarBotao("Salvar Alterações", new ActionListener() {
+            JButton btnSalvar = criarBotao("Salvar Alteracoes", new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     projeto.nome = tfNome.getText();
                     projeto.descricao = tfDesc.getText();
@@ -581,7 +582,7 @@ public class SistemaGestaoCompletoFinal {
             framePrincipal.revalidate();
             framePrincipal.repaint();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(framePrincipal, "Erro na tela de edição: " + e.getMessage());
+            JOptionPane.showMessageDialog(framePrincipal, "Erro na tela de edicao: " + e.getMessage());
         }
     }
     
@@ -601,7 +602,7 @@ public class SistemaGestaoCompletoFinal {
             }
         }
         if (concluidas == totalTarefas) {
-            return "Concluído";
+            return "Concluido";
         }
         if (concluidas > 0 && concluidas < totalTarefas) {
             return "Em Andamento";
@@ -618,7 +619,7 @@ public class SistemaGestaoCompletoFinal {
             lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
             panel.add(lblTitulo, BorderLayout.NORTH);
 
-            String[] colunas = {"Descrição", "Projeto", "Data Fim Prevista", "Status", "Prioridade"};
+            String[] colunas = {"Descricao", "Projeto", "Data Fim Prevista", "Status", "Prioridade"};
             DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
 
             if(usuarioLogado != null) {
@@ -659,7 +660,7 @@ public class SistemaGestaoCompletoFinal {
             JPanel panel = new JPanel(new BorderLayout());
             panel.setBackground(Color.WHITE);
 
-            JLabel lblTitulo = new JLabel("Gestão de Equipes", JLabel.CENTER);
+            JLabel lblTitulo = new JLabel("Gestao de Equipes", JLabel.CENTER);
             lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
             panel.add(lblTitulo, BorderLayout.NORTH);
 
@@ -707,7 +708,7 @@ public class SistemaGestaoCompletoFinal {
             JPanel panel = new JPanel(new BorderLayout());
             panel.setBackground(Color.WHITE);
 
-            JLabel lblTitulo = new JLabel("Gestão de Usuários", JLabel.CENTER);
+            JLabel lblTitulo = new JLabel("Gestao de Usuarios", JLabel.CENTER);
             lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
             panel.add(lblTitulo, BorderLayout.NORTH);
 
@@ -735,30 +736,30 @@ public class SistemaGestaoCompletoFinal {
             JPanel panelBotoes = new JPanel();
             panelBotoes.setBackground(Color.WHITE);
 
-            JButton btnExcluir = criarBotao("Excluir Usuário", new ActionListener() {
+            JButton btnExcluir = criarBotao("Excluir Usuario", new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     int linhaSelecionada = tabela.getSelectedRow();
                     if (linhaSelecionada == -1 || usuarios.size() <= linhaSelecionada) {
-                        JOptionPane.showMessageDialog(framePrincipal, "Selecione um usuário válido para excluir.");
+                        JOptionPane.showMessageDialog(framePrincipal, "Selecione um usuario valido para excluir.");
                         return;
                     }
                     
                     Usuario usuarioParaExcluir = usuarios.get(linhaSelecionada);
                     if (usuarioParaExcluir == null) {
-                        JOptionPane.showMessageDialog(framePrincipal, "Usuário inválido.");
+                        JOptionPane.showMessageDialog(framePrincipal, "Usuario invalido.");
                         return;
                     }
 
                     if (usuarioParaExcluir.getPerfil() == Perfil.ADMINISTRADOR) {
-                        JOptionPane.showMessageDialog(framePrincipal, "Não é possível excluir um Administrador.");
+                        JOptionPane.showMessageDialog(framePrincipal, "Nao e possivel excluir um Administrador.");
                         return;
                     }
 
-                    int confirmacao = JOptionPane.showConfirmDialog(framePrincipal, "Deseja realmente excluir " + usuarioParaExcluir.getNome() + "?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+                    int confirmacao = JOptionPane.showConfirmDialog(framePrincipal, "Deseja realmente excluir " + usuarioParaExcluir.getNome() + "?", "Confirmar Exclusao", JOptionPane.YES_NO_OPTION);
                     if (confirmacao == JOptionPane.YES_OPTION) {
                         usuarios.remove(linhaSelecionada);
                         mostrarTelaUsuarios();
-                        JOptionPane.showMessageDialog(framePrincipal, "Usuário excluído com sucesso.");
+                        JOptionPane.showMessageDialog(framePrincipal, "Usuario excluido com sucesso.");
                     }
                 }
             });
@@ -778,7 +779,7 @@ public class SistemaGestaoCompletoFinal {
             framePrincipal.revalidate();
             framePrincipal.repaint();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(framePrincipal, "Erro na tela de usuários: " + e.getMessage());
+            JOptionPane.showMessageDialog(framePrincipal, "Erro na tela de usuarios: " + e.getMessage());
         }
     }
     
@@ -787,7 +788,7 @@ public class SistemaGestaoCompletoFinal {
             JPanel panel = new JPanel(new BorderLayout());
             panel.setBackground(Color.WHITE);
 
-            JLabel lblTitulo = new JLabel("Relatórios de Projetos", JLabel.CENTER);
+            JLabel lblTitulo = new JLabel("Relatorios de Projetos", JLabel.CENTER);
             lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
             panel.add(lblTitulo, BorderLayout.NORTH);
 
@@ -826,7 +827,7 @@ public class SistemaGestaoCompletoFinal {
 
             panel.add(panelFiltros, BorderLayout.NORTH);
 
-            String[] colunas = {"Projeto", "Gerente", "Analista", "Tarefa", "Status", "Prioridade", "Data Início", "Data Fim Prevista", "Em Atraso", "Motivo"};
+            String[] colunas = {"Projeto", "Gerente", "Analista", "Tarefa", "Status", "Prioridade", "Data Inicio", "Data Fim Prevista", "Em Atraso", "Motivo"};
             DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
             JTable tabela = new JTable(modelo);
             JScrollPane scroll = new JScrollPane(tabela);
@@ -839,13 +840,13 @@ public class SistemaGestaoCompletoFinal {
 
             atualizarTabelaRelatorios("", "", "");
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(framePrincipal, "Erro na tela de relatórios: " + e.getMessage());
+            JOptionPane.showMessageDialog(framePrincipal, "Erro na tela de relatorios: " + e.getMessage());
         }
     }
     
     private void atualizarTabelaRelatorios(String filtroProjeto, String filtroGerente, String filtroAnalista) {
         try {
-            DefaultTableModel modelo = new DefaultTableModel(new String[]{"Projeto", "Gerente", "Analista", "Tarefa", "Status", "Prioridade", "Data Início", "Data Fim Prevista", "Em Atraso", "Motivo"}, 0);
+            DefaultTableModel modelo = new DefaultTableModel(new String[]{"Projeto", "Gerente", "Analista", "Tarefa", "Status", "Prioridade", "Data Inicio", "Data Fim Prevista", "Em Atraso", "Motivo"}, 0);
             for (Projeto p : projetos) {
                 if(p == null) continue;
                 if (!filtroProjeto.isEmpty() && !p.nome.toLowerCase().contains(filtroProjeto.toLowerCase())) continue;
@@ -855,9 +856,9 @@ public class SistemaGestaoCompletoFinal {
                     if (t.responsavel != null && !filtroAnalista.isEmpty() && !t.responsavel.nome.toLowerCase().contains(filtroAnalista.toLowerCase())) continue;
                     
                     boolean emAtraso = (t.dataFimPrevista != null && new Date().after(t.dataFimPrevista)) && t.status != Status.CONCLUIDO && t.status != Status.CANCELADO;
-                    String motivo = (t.status == Status.CANCELADO) ? t.motivo : (emAtraso ? "Sim" : "Não");
+                    String motivo = (t.status == Status.CANCELADO) ? t.motivo : (emAtraso ? "Sim" : "Nao");
 
-                    modelo.addRow(new Object[]{p.nome, p.gerente != null ? p.gerente.nome : "N/A", t.responsavel != null ? t.responsavel.nome : "N/A", t.descricao, t.status, t.prioridade, sdf.format(t.dataInicio), sdf.format(t.dataFimPrevista), emAtraso ? "Sim" : "Não", motivo});
+                    modelo.addRow(new Object[]{p.nome, p.gerente != null ? p.gerente.nome : "N/A", t.responsavel != null ? t.responsavel.nome : "N/A", t.descricao, t.status, t.prioridade, sdf.format(t.dataInicio), sdf.format(t.dataFimPrevista), emAtraso ? "Sim" : "Nao", motivo});
                 }
             }
             
@@ -880,7 +881,7 @@ public class SistemaGestaoCompletoFinal {
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(framePrincipal, "Erro ao atualizar relatórios: " + e.getMessage());
+            JOptionPane.showMessageDialog(framePrincipal, "Erro ao atualizar relatorios: " + e.getMessage());
         }
     }
 
@@ -896,9 +897,9 @@ public class SistemaGestaoCompletoFinal {
                     if (t.responsavel != null && !filtroAnalista.isEmpty() && !t.responsavel.nome.toLowerCase().contains(filtroAnalista.toLowerCase())) continue;
                     
                     boolean emAtraso = (t.dataFimPrevista != null && new Date().after(t.dataFimPrevista)) && t.status != Status.CONCLUIDO && t.status != Status.CANCELADO;
-                    String motivo = (t.status == Status.CANCELADO) ? t.motivo : (emAtraso ? "Sim" : "Não");
+                    String motivo = (t.status == Status.CANCELADO) ? t.motivo : (emAtraso ? "Sim" : "Nao");
 
-                    writer.write(p.nome + ";" + (p.gerente != null ? p.gerente.nome : "N/A") + ";" + (t.responsavel != null ? t.responsavel.nome : "N/A") + ";" + t.descricao + ";" + t.status + ";" + t.prioridade + ";" + sdf.format(t.dataInicio) + ";" + sdf.format(t.dataFimPrevista) + ";" + (emAtraso ? "Sim" : "Não") + ";" + motivo + "\n");
+                    writer.write(p.nome + ";" + (p.gerente != null ? p.gerente.nome : "N/A") + ";" + (t.responsavel != null ? t.responsavel.nome : "N/A") + ";" + t.descricao + ";" + t.status + ";" + t.prioridade + ";" + sdf.format(t.dataInicio) + ";" + sdf.format(t.dataFimPrevista) + ";" + (emAtraso ? "Sim" : "Nao") + ";" + motivo + "\n");
                 }
             }
             JOptionPane.showMessageDialog(framePrincipal, "Arquivo relatorios_export.csv gerado com sucesso!");
