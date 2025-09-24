@@ -1,6 +1,5 @@
 // SistemaGestaoCompletoFinal.java
-// Este código foi reescrito para atender a todos os requisitos do projeto, combinando
-// uma interface gráfica amigável com uma lógica de negócio robusta e segura.
+// Versão completa com melhorias de usabilidade e interface de edição.
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -14,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import com.toedter.calendar.JCalendar;
 
 public class SistemaGestaoCompletoFinal {
 
@@ -388,7 +388,7 @@ public class SistemaGestaoCompletoFinal {
             lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
             panel.add(lblTitulo, BorderLayout.NORTH);
 
-            String[] colunas = {"Nome", "Gerente", "Equipe", "Status", "Progresso"};
+            String[] colunas = {"Nome", "Gerente", "Equipe", "Status", "Progresso", "Ações"};
             DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
 
             for (Projeto p : projetos) {
@@ -409,11 +409,36 @@ public class SistemaGestaoCompletoFinal {
                     }
                 }
                 int progresso = (p.tarefas.isEmpty()) ? 0 : (tarefasConcluidas * 100) / p.tarefas.size();
+                String acoes = "Editar/Excluir";
 
-                modelo.addRow(new Object[]{p.nome, p.gerente.nome, membros, getStatusProjeto(p), progresso + "%"});
+                modelo.addRow(new Object[]{p.nome, p.gerente.nome, membros, getStatusProjeto(p), progresso + "%", acoes});
             }
 
             JTable tabela = new JTable(modelo);
+            tabela.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getClickCount() == 1) {
+                        int linha = tabela.getSelectedRow();
+                        int coluna = tabela.getSelectedColumn();
+                        if (coluna == tabela.getColumnCount() - 1) { // Última coluna
+                            int escolha = JOptionPane.showOptionDialog(framePrincipal,
+                                "O que deseja fazer?", "Ações",
+                                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                                null, new Object[]{"Editar", "Excluir"}, "Editar");
+                            
+                            if (escolha == JOptionPane.YES_OPTION) {
+                                mostrarTelaEditarProjeto(projetos.get(linha));
+                            } else if (escolha == JOptionPane.NO_OPTION) {
+                                int confirmacao = JOptionPane.showConfirmDialog(framePrincipal, "Deseja realmente excluir este projeto?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+                                if (confirmacao == JOptionPane.YES_OPTION) {
+                                    projetos.remove(linha);
+                                    mostrarTelaProjetos();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
             JScrollPane scroll = new JScrollPane(tabela);
             panel.add(scroll, BorderLayout.CENTER);
 
@@ -456,16 +481,16 @@ public class SistemaGestaoCompletoFinal {
 
             JLabel lblNome = new JLabel("Nome do Projeto:"); JTextField tfNome = new JTextField(20);
             JLabel lblDesc = new JLabel("Descrição:"); JTextField tfDesc = new JTextField(20);
-            JLabel lblDataInicio = new JLabel("Data Início (yyyy-MM-dd):"); JTextField tfDataInicio = new JTextField(10);
-            JLabel lblDataFim = new JLabel("Data Fim Prevista (yyyy-MM-dd):"); JTextField tfDataFim = new JTextField(10);
-
+            JLabel lblDataInicio = new JLabel("Data Início:"); JCalendar calDataInicio = new JCalendar();
+            JLabel lblDataFim = new JLabel("Data Fim Prevista:"); JCalendar calDataFim = new JCalendar();
+            
             JButton btnSalvar = criarBotao("Salvar", new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     try {
                         String nome = tfNome.getText();
                         String desc = tfDesc.getText();
-                        Date inicio = sdf.parse(tfDataInicio.getText());
-                        Date fim = sdf.parse(tfDataFim.getText());
+                        Date inicio = calDataInicio.getDate();
+                        Date fim = calDataFim.getDate();
 
                         if (nome.isEmpty() || desc.isEmpty()) {
                              JOptionPane.showMessageDialog(framePrincipal, "Preencha todos os campos!");
@@ -485,8 +510,8 @@ public class SistemaGestaoCompletoFinal {
                         }
                         JOptionPane.showMessageDialog(framePrincipal, "Projeto criado com sucesso!");
                         mostrarTelaProjetos();
-                    } catch (ParseException ex) {
-                        JOptionPane.showMessageDialog(framePrincipal, "Formato de data inválido. Use yyyy-MM-dd.");
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(framePrincipal, "Erro ao salvar projeto: " + ex.getMessage());
                     }
                 }
             });
@@ -499,8 +524,8 @@ public class SistemaGestaoCompletoFinal {
 
             gbc.gridx = 0; gbc.gridy = 0; panel.add(lblNome, gbc); gbc.gridx = 1; panel.add(tfNome, gbc);
             gbc.gridx = 0; gbc.gridy = 1; panel.add(lblDesc, gbc); gbc.gridx = 1; panel.add(tfDesc, gbc);
-            gbc.gridx = 0; gbc.gridy = 2; panel.add(lblDataInicio, gbc); gbc.gridx = 1; panel.add(tfDataInicio, gbc);
-            gbc.gridx = 0; gbc.gridy = 3; panel.add(lblDataFim, gbc); gbc.gridx = 1; panel.add(tfDataFim, gbc);
+            gbc.gridx = 0; gbc.gridy = 2; panel.add(lblDataInicio, gbc); gbc.gridx = 1; panel.add(calDataInicio, gbc);
+            gbc.gridx = 0; gbc.gridy = 3; panel.add(lblDataFim, gbc); gbc.gridx = 1; panel.add(calDataFim, gbc);
             gbc.gridx = 0; gbc.gridy = 4; panel.add(btnSalvar, gbc); gbc.gridx = 1; panel.add(btnVoltar, gbc);
 
             framePrincipal.getContentPane().removeAll();
@@ -509,6 +534,54 @@ public class SistemaGestaoCompletoFinal {
             framePrincipal.repaint();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(framePrincipal, "Erro na tela de novo projeto: " + e.getMessage());
+        }
+    }
+
+    private void mostrarTelaEditarProjeto(Projeto projeto) {
+        try {
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.setBackground(Color.WHITE);
+
+            JPanel painelCampos = new JPanel(new GridBagLayout());
+            painelCampos.setBackground(Color.WHITE);
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5,5,5,5);
+
+            JLabel lblNome = new JLabel("Nome do Projeto:"); JTextField tfNome = new JTextField(20); tfNome.setText(projeto.nome);
+            JLabel lblDesc = new JLabel("Descrição:"); JTextField tfDesc = new JTextField(20); tfDesc.setText(projeto.descricao);
+            
+            JButton btnSalvar = criarBotao("Salvar Alterações", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    projeto.nome = tfNome.getText();
+                    projeto.descricao = tfDesc.getText();
+                    JOptionPane.showMessageDialog(framePrincipal, "Projeto atualizado com sucesso!");
+                    mostrarTelaProjetos();
+                }
+            });
+
+            JButton btnVoltar = criarBotao("Voltar", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mostrarTelaProjetos();
+                }
+            });
+
+            gbc.gridx=0; gbc.gridy=0; painelCampos.add(lblNome, gbc); gbc.gridx=1; painelCampos.add(tfNome, gbc);
+            gbc.gridx=0; gbc.gridy=1; painelCampos.add(lblDesc, gbc); gbc.gridx=1; painelCampos.add(tfDesc, gbc);
+
+            JPanel painelBotoes = new JPanel();
+            painelBotoes.setBackground(Color.WHITE);
+            painelBotoes.add(btnSalvar);
+            painelBotoes.add(btnVoltar);
+
+            panel.add(painelCampos, BorderLayout.CENTER);
+            panel.add(painelBotoes, BorderLayout.SOUTH);
+
+            framePrincipal.getContentPane().removeAll();
+            framePrincipal.getContentPane().add(panel);
+            framePrincipal.revalidate();
+            framePrincipal.repaint();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(framePrincipal, "Erro na tela de edição: " + e.getMessage());
         }
     }
     
