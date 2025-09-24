@@ -1,0 +1,85 @@
+Limitações e Observações Finais
+
+Aplicação é console-based (roda apenas no terminal do NetBeans).
+
+Notificações por e-mail são simuladas no console (não envia e-mail real).
+
+Recomendado JDK 17+ por causa do uso de switch -> e configuração Maven.
+
+O projeto é um protótipo acadêmico: não possui banco de dados real, os dados ficam em memória durante a execução.
+
+Exportação é feita em CSV simples, ideal para abrir no Excel.
+
+Estrutura já preparada para futuras evoluções (como banco de dados, interface gráfica e envio real de e-mails).
+
+
+📌 Como abrir e rodar o projeto no NetBeans
+
+Baixar o arquivo ZIP e extrair em uma pasta do computador.
+
+No NetBeans: vá em File → Open Project.
+
+Selecione a pasta do projeto extraído (onde está o pom.xml).
+
+O projeto vai aparecer na aba lateral do NetBeans.
+
+Abra o arquivo SistemaFinal.java dentro de src/main/java.
+
+Clique com o botão direito em SistemaFinal.java → Run File.
+(ou clique no nome do projeto → Run)
+
+O programa inicia no console do NetBeans, pronto para usar.
+
+
+🎬 Roteiro – Como abrir e rodar o projeto no NetBeans
+1. Abrindo o projeto
+
+Abra o NetBeans.
+
+Clique em File → Open Project.
+
+Navegue até a pasta onde está o projeto (SistemaGestaoProjetos).
+
+Clique em Abrir Projeto.
+
+2. Estrutura do projeto
+
+Na aba lateral, você vai ver a árvore de pastas:
+
+src/main/java → aqui ficam os arquivos .java
+
+Dentro dessa pasta está o arquivo principal: SistemaFinal.java
+
+3. Rodando o projeto
+
+Clique com o botão direito no arquivo SistemaFinal.java.
+
+Selecione Run File.
+
+Ou, se preferir, clique no nome do projeto com botão direito → Run.
+
+4. Interação no terminal
+
+O programa vai rodar no console do NetBeans.
+
+Primeiro, ele pede login e senha (pode usar os usuários pré-cadastrados).
+
+Depois, de acordo com o perfil (Admin, Gerente ou Colaborador), aparecem as opções de menu:
+
+Cadastrar usuário
+
+Criar projeto
+
+Adicionar tarefas
+
+Listar projetos/tarefas
+
+Exportar relatório
+
+5. Encerramento da explicação
+
+Ressalte que o código já está pronto para executar.
+
+Todos os menus funcionam diretamente no console.
+
+O sistema também gera relatórios em CSV que podem ser abertos no Excel.
