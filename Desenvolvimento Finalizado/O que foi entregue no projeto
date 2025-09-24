@@ -1,0 +1,18 @@
+O que foi entregue
+O código SistemaGestaoCompletoFinal.java é uma versão aprimorada, que combina uma interface gráfica intuitiva com uma lógica de negócios robusta. Ele inclui:
+
+Interfaces Gráficas: Telas para cadastro de usuários, login, painel de gestão, projetos, tarefas, equipes e relatórios. A navegação entre elas é fluida, como você viu no vídeo.
+
+Funcionalidades Avançadas:
+
+Controle de Acesso: Diferentes permissões para Administrador, Gerente e Colaborador.
+
+Regras de Negócio: Lógica para limitar a alocação de usuários a 4 projetos simultâneos.
+
+Relatórios e Filtros: A tela de relatórios possui filtros funcionais e a opção de exportar dados para um arquivo CSV.
+
+Segurança: O código foi aprimorado para ser mais estável, com tratamento de erros que previne problemas comuns como NullPointerException.
+
+Dados de Exemplo: Os usuários e projetos que você solicitou já estão pré-carregados, permitindo que você demonstre o sistema imediatamente após a execução.
+
+O código foi criado para ser um único arquivo, então tudo o que você precisa fazer é colá-lo em um projeto NetBeans e executá-lo. Não há necessidade de arquivos adicionais.
