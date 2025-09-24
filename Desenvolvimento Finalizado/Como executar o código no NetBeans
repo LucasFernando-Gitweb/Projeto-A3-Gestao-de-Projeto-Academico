@@ -1,4 +1,61 @@
-1. Baixar o Código
+ executar o código no NetBeans, garantindo que tudo funcione perfeitamente.
+
+Com certeza! Aqui está um passo a passo detalhado para você abrir e executar o código no NetBeans, garantindo que tudo funcione perfeitamente.
+
+### 1. Baixar o Código
+
+Primeiro, você precisa ter o arquivo `.java` salvo no seu computador.
+
+* **Arquivo do Código**: `SistemaGestaoCompletoFinal.java`
+
+Se o código estiver em formato de texto, copie-o e cole em um editor de texto simples, como o Bloco de Notas (Windows) ou o TextEdit (Mac), e salve o arquivo como `SistemaGestaoCompletoFinal.java`. Certifique-se de que a extensão é `.java`.
+
+### 2. Abrir o NetBeans
+
+Se o NetBeans já estiver instalado, abra-o. Se não, você pode baixá-lo no site oficial.
+
+1.  No menu principal, clique em **File** (Arquivo).
+2.  Selecione **New Project...** (Novo Projeto...).
+
+### 3. Criar um Novo Projeto Java
+
+Você precisará criar um novo projeto para hospedar o código.
+
+1.  Na janela de **New Project**, selecione a categoria **Java with Ant** ou **Java with Maven** (qualquer uma funciona, mas o **Java with Ant** é mais simples para este caso).
+2.  Em **Projects**, selecione **Java Application**.
+3.  Clique em **Next** (Próximo).
+4.  Na tela de **New Java Application**, preencha o campo **Project Name** (Nome do Projeto) com um nome que você se lembre facilmente, como `SistemaDeGestao`.
+5.  Em **Create Main Class** (Criar Classe Principal), desmarque a caixa de seleção. Isso é importante para que você possa usar o arquivo de código que já tem.
+6.  Clique em **Finish** (Finalizar).
+
+O NetBeans irá criar a estrutura do projeto para você.
+
+### 4. Adicionar o Código ao Projeto
+
+Agora, é hora de inserir o seu código.
+
+1.  Na janela **Projects** (Projetos) no lado esquerdo do NetBeans, expanda a pasta do seu novo projeto (`SistemaDeGestao`).
+2.  Expanda a pasta **Source Packages** (Pacotes de Código).
+3.  Selecione o pacote padrão (geralmente `src` ou o nome do seu projeto). Clique com o botão direito e escolha **New** (Novo) -> **Java Class**.
+4.  Na janela de **New Java Class**, preença o campo **Class Name** (Nome da Classe) com **`SistemaGestaoCompletoFinal`**. É crucial que o nome seja exatamente este para que o código funcione corretamente.
+5.  Clique em **Finish** (Finalizar).
+
+Um novo arquivo chamado `SistemaGestaoCompletoFinal.java` será aberto no editor de código.
+
+### 5. Copiar e Colar o Código
+
+1.  Apague todo o código que foi gerado automaticamente no novo arquivo `SistemaGestaoCompletoFinal.java`.
+2.  Copie e cole todo o código que eu te forneci anteriormente no arquivo `SistemaGestaoCompletoFinal.java`.
+3.  Salve o arquivo (Ctrl + S ou clique no ícone de disquete).
+
+### 6. Executar o Código
+
+Agora, é o momento de rodar a aplicação.
+
+1.  Clique com o botão direito no arquivo `SistemaGestaoCompletoFinal.java` na janela **Projects**.
+2.  No menu que aparece, selecione **Run File** (Executar Arquivo) ou use o atalho `Shift + F6`.
+
+Uma nova janela do sistema de gestão será aberta. Você pode usar os logins de exemplo (`lucas.silva`, `carol.cavalcante`, etc.) e a senha padrão (`Padrao123`) para testar o sistema.1. Baixar o Código
 Primeiro, você precisa ter o arquivo .java salvo no seu computador.
 
 Arquivo do Código: SistemaGestaoCompletoFinal.java
