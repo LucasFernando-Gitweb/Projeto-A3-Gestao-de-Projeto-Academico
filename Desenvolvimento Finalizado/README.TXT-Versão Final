@@ -1,0 +1,56 @@
+Visão Geral do Projeto
+Este projeto é um Sistema de Gestão de Projetos desenvolvido em Java com interface gráfica (Swing). Ele foi criado para simular o gerenciamento de tarefas, equipes e relatórios em um ambiente corporativo. A aplicação permite o cadastro de usuários com perfis específicos, a criação de projetos e a alocação de equipes, além da geração de relatórios detalhados.
+
+Objetivo
+O principal objetivo do projeto é demonstrar, de forma clara e visual, um fluxo completo de gestão de projetos. A interface foi desenhada para ser intuitiva e as funcionalidades, como o controle de acesso e os filtros de busca, visam refletir os requisitos de um sistema real.
+
+O que o Projeto Entrega
+Interfaces Gráficas (GUI): Telas para cadastro de usuários, login, painel de gestão, projetos, tarefas, equipes, usuários e relatórios.
+
+Funcionalidades de Gestão:
+
+Cadastro e Login: Sistema de autenticação com validação de senhas e sugestão de login.
+
+Controle de Acesso: Diferentes permissões para os perfis de Administrador, Gerente e Colaborador.
+
+Gerenciamento de Projetos e Tarefas: Criação de projetos com status de andamento e um sistema de prioridades.
+
+Relatórios: Geração de relatórios em formato CSV com dados filtrados.
+
+Segurança e Robustez: O código é "à prova de erros básicos" com tratamento de exceções para evitar NullPointerException e outros problemas, garantindo que o sistema não trave.
+
+Dados de Exemplo: O sistema já vem pré-carregado com usuários e projetos para facilitar a demonstração.
+
+Passo a Passo para Execução
+Copiar o Código: Salve o conteúdo do arquivo SistemaGestaoCompletoFinal.java em um arquivo de mesmo nome.
+
+Abrir no NetBeans: Inicie o NetBeans, crie um novo projeto Java e cole o código no arquivo principal.
+
+Executar: Clique no botão Run (Executar) ou pressione F6 no teclado.
+
+A aplicação será iniciada e a tela de login aparecerá.
+
+Usuários de Exemplo para Teste
+Use os seguintes dados para testar o sistema:
+
+Administrador (PO):
+
+Login: lucas.silva
+
+Senha: Padrao123
+
+Gerente:
+
+Login: carol.cavalcante
+
+Senha: Padrao123
+
+Colaboradores:
+
+Login: thamiris.marie
+
+Senha: Padrao123
+
+Login: rodrigo.bat
+
+Senha: Padrao123
