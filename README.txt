@@ -1,11 +1,6 @@
 
 # 📌 README – Sistema de Gestão de Projetos (Java)
 
-Com certeza! O seu projeto é um sucesso, e agora vamos deixar a documentação com a mesma energia. Adicionei emojis e uma formatação mais visual ao README.md, tornando-o mais atrativo e fácil de ler para sua apresentação.
-
-O conteúdo continua robusto e completo, mas agora com um toque visual que o destaca.
-
-Arquivo: README.md
 🌟 Visão Geral do Projeto
 Este é um Sistema de Gestão de Projetos desenvolvido em Java com interface gráfica (Swing) 🖥️. Ele foi criado para simular, de forma completa e robusta, o gerenciamento de tarefas, equipes e projetos em um ambiente corporativo. A aplicação permite o cadastro de usuários com perfis específicos, a criação de projetos com regras de negócio claras, e a geração de relatórios detalhados 📈.
 
