@@ -1,0 +1,40 @@
+No NetBeans (e no Java em geral), não podemos ter métodos private fora de uma classe. No seu código, você separou em "partes", e algumas funções como mostrarTelaMinhasTarefas(), mostrarTelaProjetos(), mostrarTelaUsuarios(), mostrarTelaEquipes(), mostrarTelaRelatorios(), etc., estão fora da classe SistemaGestaoCompletoFinal. Isso causa o erro de class, interface or enum expected.
+
+Além disso, não se pode ter múltiplos imports dentro de blocos de código fora da classe. Todos os imports devem estar no topo do arquivo, antes da declaração da classe.
+
+Como ajustar:
+
+Junte todas as partes dentro da classe SistemaGestaoCompletoFinal.
+Por exemplo:
+
+public class SistemaGestaoCompletoFinal {
+    // enums, classes internas (Usuario, Projeto, Tarefa)
+    // atributos
+    // construtor
+    // métodos de telas: mostrarTelaInicial(), mostrarTelaCadastro(), mostrarTelaLogin(), mostrarPainelGestao(), etc.
+    // métodos adicionais: mostrarTelaMinhasTarefas(), mostrarTelaProjetos(), mostrarTelaUsuarios(), mostrarTelaEquipes(), mostrarTelaRelatorios(), atualizarTabelaRelatorios(), exportarCSVRelatorios()
+    // main()
+}
+
+
+Remova os imports duplicados das "partes 2, 3 e 4" e mantenha apenas no topo:
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import javax.swing.table.DefaultTableModel;
+import java.io.FileWriter;
+import java.io.IOException;
+
+
+Verifique se todos os métodos usam this. ou os atributos da classe, como usuarios, projetos, usuarioLogado, framePrincipal, etc.
+
+💡 Resumo do erro:
+
+Métodos private estavam fora da classe → erro de "class, interface or enum expected".
+
+Imports repetidos ou dentro do corpo → inválido.
+
+NetBeans precisa que tudo esteja dentro de uma única classe pública (ou organizadas em múltiplas classes em arquivos separados).
