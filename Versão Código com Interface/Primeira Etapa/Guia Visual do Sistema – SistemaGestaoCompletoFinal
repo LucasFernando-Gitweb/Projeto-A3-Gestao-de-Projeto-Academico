@@ -1,0 +1,96 @@
+1. Tela Inicial
+● Título: Gestão de Projetos
+● Opções:
+1. Criar Cadastro → abre a tela de cadastro de usuário.
+2. Já sou cadastrado → abre a tela de login.
+Visual:
+● Fundo: branco
+● Botões: azul (#0066CC) com letras brancas
+2. Tela de Cadastro
+● Campos obrigatórios:
+○ Nome
+○ CPF
+○ E-mail
+○ Cargo
+○ Senha
+● Botões:
+○ Criar → cria cadastro e mostra login sugerido
+○ Voltar → retorna à tela inicial
+● Validações:
+○ Campos vazios → pop-up “Preencha todos os campos!”
+○ Geração de login automático: nome.sobrenome + 3 últimos dígitos
+do CPF
+3. Tela de Login
+● Campos:
+○ Login ou E-mail
+○ Senha
+● Botões:
+○ Acessar → autentica usuário
+■ Senha incorreta → pop-up “Usuário ou senha incorretos!”
+○ Voltar → retorna à tela inicial
+● Dados de teste:
+○ Login: lucas.silva
+○ Senha: Padrao123
+4. Painel de Gestão
+● Opções (botões principais):
+○ Minhas Tarefas → lista tarefas atribuídas ao usuário
+○ Projetos → lista projetos existentes, permite filtrar e exportar CSV
+○ Usuários → lista usuários, permite filtrar e excluir (somente ADM)
+○ Equipes → filtra por projeto, gerente, membros e status
+○ Relatórios → filtra por analista, gerente, projeto, exporta CSV e mostra
+opção de e-mail
+● Botão Voltar: sempre retorna ao painel principal ou tela anterior
+5. Minhas Tarefas
+● Visualização:
+○ Lista tarefas atribuídas ao usuário
+○ Colunas: Descrição, Data Início, Data Fim, Status, Prioridade
+● Exemplo de tarefas:
+○ Implementar módulo login → EM_ANDAMENTO → Alta
+○ Criar relatório CSV → PLANEJANDO → Média
+● Botão Voltar: retorna ao Painel de Gestão
+6. Projetos
+● Visualização:
+○ Lista projetos com nome, gerente e status
+○ Permite filtrar por nome do projeto ou gerente
+● Exemplo:
+○ Projeto Alpha → Gerente: Carol Cavalcante
+○ Projeto Beta → Gerente: Carol Cavalcante
+● Botões:
+○ Incluir Projeto → abrir cadastro de projeto com campos: nome, descrição,
+datas, equipe
+○ Excluir Projeto → remove projeto selecionado
+○ Voltar → retorna ao Painel
+● Exportação: CSV com projetos existentes
+7. Usuários
+● Visualização:
+○ Lista de usuários com Nome, Cargo, Login
+○ Filtragem: nome, email, login
+● Botões:
+○ Excluir Usuário → somente ADM
+○ Voltar → retorna ao Painel
+● Informações: mostra projetos em andamento e finalizados de cada usuário
+8. Equipes
+● Filtros:
+○ Nome da equipe
+○ Nome do projeto
+○ Nome do gerente
+● Visualização:
+○ Status do projeto
+○ Membros da equipe
+○ Divisão por cargo
+● Botão Voltar: retorna ao Painel
+9. Relatórios
+● Filtros:
+○ Nome do projeto
+○ Analista
+○ Gerente
+○ Últimos 30 dias
+● Opções:
+○ Exportar CSV
+○ Inserir e-mail (não envia de fato, apenas visual)
+● Botão Voltar: retorna ao Painel
+10. Estilo e cores
+● Fundo das telas: branco
+● Botões: azul (#0066CC) com letras brancas
+● Pop-ups: JOptionPane para erros, alertas e confirmações
+● Tabelas: padrão JTable com colunas claras e legívei
