@@ -1,0 +1,52 @@
+Como rodar o Projeto no NetBeans:
+Passo 1 – Abrir o NetBeans
+1. Abra o NetBeans IDE no seu computador.
+2. Certifique-se de que você tem uma versão Java instalada (JDK 8 ou superior).
+Passo 2 – Criar um novo projeto
+1. Clique em File → New Project.
+2. Em Categories, selecione Java.
+3. Em Projects, selecione Java Application.
+4. Clique em Next.
+5. No campo Project Name, coloque por exemplo: SistemaGestaoFinal.
+6. Escolha a pasta onde o projeto será salvo.
+7. Desmarque a opção Create Main Class (porque você já tem o arquivo
+SistemaGestaoCompletoFinal.java).
+8. Clique em Finish.
+Passo 3 – Adicionar seu arquivo Java ao projeto
+1. No painel Projects, expanda seu projeto recém-criado.
+2. Clique com o botão direito na pasta Source Packages → New → Java Class.
+○ Aqui você pode criar um arquivo com qualquer nome temporário, por
+exemplo Temp.java.
+3. Abra esse arquivo, delete todo o conteúdo e cole todo o código do
+SistemaGestaoCompletoFinal.java que você salvou no bloco de notas.
+4. Renomeie a classe para SistemaGestaoCompletoFinal (se já não estiver).
+○ Certifique-se que o nome do arquivo é igual ao nome da classe pública
+(SistemaGestaoCompletoFinal.java).
+5. Salve o arquivo (Ctrl + S ou File → Save).
+Passo 4 – Configurar o projeto
+1. Certifique-se de que o NetBeans está usando o JDK correto:
+○ Clique com o botão direito no projeto → Properties → Libraries → Java
+Platform
+○ Escolha o JDK que você possui (8 ou superior).
+2. Não é necessário adicionar bibliotecas externas, pois o sistema usa Java padrão
+(javax.swing e java.util).
+Passo 5 – Rodar o projeto
+1. Clique com o botão direito no arquivo SistemaGestaoCompletoFinal.java →
+Run File.
+2. O sistema deve abrir a tela inicial, com as opções:
+○ Criar Cadastro
+○ Já sou cadastrado
+3. Você poderá fazer login com os dados de exemplo:
+○ Login: lucas.silva
+○ Senha: Padrao123
+4. Após login, abrirá o Painel de Gestão com as opções:
+○ Minhas Tarefas (com tarefas de exemplo)
+○ Projetos (com projetos de exemplo)
+○ Usuários
+○ Equipes
+○ Relatórios (exporta CSV)
+Dicas
+● Todas as telas possuem botão Voltar, para retornar ao menu principal.
+● Campos obrigatórios ou incorretos exibem pop-ups de alerta.
+● A exportação de CSV funciona no diretório do projeto.
+—-----------------------------------------------------------------------------------------------------------
